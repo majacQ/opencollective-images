@@ -6,7 +6,9 @@
     "url": "https://github.com/opencollective/opencollective-images.git"
   },
   "jest": {
-    "testPathIgnorePatterns": ["opencollective-api/"]
+    "testPathIgnorePatterns": [
+      "opencollective-api/"
+    ]
   },
   "private": true,
   "engines": {
@@ -23,7 +25,7 @@
     "express": "4.17.1",
     "express-basic-auth": "1.2.0",
     "express-winston": "4.0.5",
-    "express-ws": "4.0.0",
+    "express-ws": "^5.0.2",
     "graphql": "15.3.0",
     "graphql-tag": "2.11.0",
     "image-size": "0.8.3",
