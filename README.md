@@ -1,9 +1,6 @@
 # Open Collective Images
 
-[![Circle CI](https://circleci.com/gh/opencollective/opencollective-images/tree/master.svg?style=shield)](https://circleci.com/gh/opencollective/opencollective-images/tree/master)
-[![Slack Status](https://slack.opencollective.org/badge.svg)](https://slack.opencollective.org)
 [![Dependency Status](https://david-dm.org/opencollective/opencollective-images/status.svg)](https://david-dm.org/opencollective/opencollective-images)
-[![Greenkeeper badge](https://badges.greenkeeper.io/opencollective/opencollective-images.svg)](https://greenkeeper.io/)
 
 ## Foreword
 
@@ -66,7 +63,7 @@ To deploy to staging or production, you need to be a core member of the Open Col
 We're currently relying on the following Heroku buildpacks:
 
 - https://github.com/heroku/heroku-buildpack-apt
-- https://github.com/bogini/heroku-buildpack-graphicsmagick
+- https://github.com/MikeKoval/heroku-buildpack-graphicsmagick
 - heroku/nodejs
 
 ### Staging (heroku)
@@ -75,7 +72,7 @@ We're currently relying on the following Heroku buildpacks:
 # Before first deployment, configure staging remote
 git remote add staging https://git.heroku.com/oc-staging-image-server.git
 
-# Then deploy master with
+# Then deploy main with
 npm run deploy:staging
 ```
 
@@ -87,7 +84,7 @@ npm run deploy:staging
 # Before first deployment, configure production remote
 git remote add production https://git.heroku.com/oc-prod-image-server.git
 
-# Then deploy master with
+# Then deploy main with
 npm run deploy:production
 ```
 

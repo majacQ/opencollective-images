@@ -4,7 +4,7 @@ import pLimit from 'p-limit';
 import { cloneDeep } from 'lodash';
 
 import { imageRequest } from './request';
-import { getCloudinaryUrl } from './utils';
+import { getCloudinaryUrl, getWebsite } from './utils';
 import { logger } from '../logger';
 
 const WEBSITE_URL = process.env.WEBSITE_URL;
@@ -77,7 +77,7 @@ export function generateSvgBanner(usersList, options) {
   let posY = margin;
 
   return Promise.all(promises)
-    .then(responses => {
+    .then((responses) => {
       const images = [];
       for (let i = 0; i < responses.length; i++) {
         const user = users[i];
@@ -111,7 +111,8 @@ export function generateSvgBanner(usersList, options) {
         }
 
         const contentType = response.headers['content-type'];
-        const website = options.linkToProfile || !user.website ? `${WEBSITE_URL}/${user.slug}` : user.website;
+
+        const website = getWebsite(user);
         const base64data = Buffer.from(rawImage).toString('base64');
 
         if (imageWidth > 0 && posX + avatarWidth + margin > imageWidth) {
@@ -122,18 +123,19 @@ export function generateSvgBanner(usersList, options) {
         const imageLink = `<a xlink:href="${website.replace(
           /&/g,
           '&amp;',
-        )}" class="opencollective-svg" target="_blank" id="${user.slug}">${image}</a>`;
+        )}" class="opencollective-svg" target="_blank" rel="nofollow sponsored" id="${user.slug}">${image}</a>`;
         images.push(imageLink);
         posX += avatarWidth + margin;
       }
 
-      return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${imageWidth ||
-        posX}" height="${imageHeight || posY + avatarHeight + margin}">
+      return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${
+        imageWidth || posX
+      }" height="${imageHeight || posY + avatarHeight + margin}">
         <style>.opencollective-svg { cursor: pointer; }</style>
         ${images.join('\n')}
       </svg>`;
     })
-    .catch(err => {
+    .catch((err) => {
       logger.error(`svgBanner: ${err.message}`);
       logger.debug(err);
     });

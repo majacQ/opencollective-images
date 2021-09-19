@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import { logger } from '../logger';
 import { fetchMembersStatsWithCache } from '../lib/graphql';
 
-const fetchText = path => fetch(path).then(response => response.text());
+const fetchText = (path) => fetch(path).then((response) => response.text());
 
 /**
  * Generates a github badge for a backerType (backers|sponsors) or for a tierSlug
@@ -16,10 +16,20 @@ export default async function badge(req, res) {
     let imageUrl;
 
     // Starting to move to shields.io matching URLs
-    if (process.env.SHIELDS_IO && req.params.backerType && !req.query.label) {
-      imageUrl = `https://img.shields.io/opencollective/${req.params.backerType}/${
-        req.params.collectiveSlug
-      }.svg?color=${color}&style=${style}`;
+    if (process.env.SHIELDS_IO && req.params.backerType) {
+      let backerType, label;
+      if (req.params.backerType.match(/sponsor/i) || req.params.backerType.match(/organization/i)) {
+        backerType = 'sponsors';
+        label = req.query.label || req.params.backerType;
+      } else if (req.params.backerType.match(/backer/i) || req.params.backerType.match(/individual/i)) {
+        backerType = 'backers';
+        label = req.query.label || req.params.backerType;
+      } else {
+        backerType = 'all';
+        label = req.query.label || 'financial contributors';
+      }
+
+      imageUrl = `https://img.shields.io/opencollective/${backerType}/${req.params.collectiveSlug}.svg?color=${color}&style=${style}&label=${label}`;
     }
 
     if (!imageUrl) {
@@ -45,7 +55,7 @@ export default async function badge(req, res) {
     } catch (err) {
       logger.error(`badge: error while fetching ${imageUrl} (${err.message})`);
       res.setHeader('cache-control', 'max-age=30');
-      return res.status(400).send(`Unable to fetch badge`);
+      return res.status(400).send('Unable to fetch badge');
     }
   } catch (err) {
     let errorParams = '';
@@ -55,6 +65,6 @@ export default async function badge(req, res) {
       errorParams = `tierSlug=${req.params.tierSlug}`;
     }
     logger.error(`badge: error while processing ${req.params.collectiveSlug} ${errorParams} (${err.message})`);
-    return res.status(400).send(`Unable to generate badge`);
+    return res.status(400).send('Unable to generate badge');
   }
 }

@@ -26,13 +26,6 @@ logger.add(winstonConsole);
 logger.exceptions.handle(winstonConsole);
 
 const loggerMiddleware = {
-  logger: expressWinston.logger({
-    winstonInstance: logger,
-    meta: false,
-    colorize: true,
-    expressFormat: true,
-    ignoreRoute: req => req.url.match(/^\/_/),
-  }),
   errorLogger: expressWinston.errorLogger({
     winstonInstance: logger,
   }),

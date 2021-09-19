@@ -1,13 +1,15 @@
 import debug from 'debug';
 
 import { logger } from '../logger';
-import { parseToBooleanDefaultFalse, parseToBooleanDefaultTrue } from '../lib/utils';
+import { parseToBooleanDefaultFalse, parseToBooleanDefaultTrue, randomInteger } from '../lib/utils';
 import { fetchMembersWithCache } from '../lib/graphql';
 import { generateSvgBanner } from '../lib/svg-banner';
 
 const imagesUrl = process.env.IMAGES_URL;
 
 const debugBanner = debug('banner');
+
+const oneDayInSeconds = 60 * 60 * 24;
 
 export default async function banner(req, res) {
   const { collectiveSlug, tierSlug, backerType } = req.params;
@@ -39,16 +41,25 @@ export default async function banner(req, res) {
     return res.status(404).send('Not found');
   }
 
-  const selector = tierSlug || backerType;
-  const linkToProfile = selector === 'contributors' || selector == 'sponsors' ? false : true;
-  const buttonImage =
-    showBtn && `${imagesUrl}/static/images/become_${selector.match(/sponsor/) ? 'sponsor' : 'backer'}.svg`;
+  let buttonImage;
+  if (showBtn) {
+    const selector = tierSlug || backerType;
+    if (selector.match(/sponsor/)) {
+      buttonImage = `${imagesUrl}/static/images/become_sponsor.svg`;
+    } else if (selector.match(/backer/)) {
+      buttonImage = `${imagesUrl}/static/images/become_backer.svg`;
+    } else {
+      buttonImage = `${imagesUrl}/static/images/contribute.svg`;
+    }
+  }
 
   if (backerType) {
     debugBanner(`generating for ${collectiveSlug} (backerType=${backerType})`);
   } else if (tierSlug) {
     debugBanner(`generating for ${collectiveSlug} (tierSlug=${tierSlug})`);
   }
+
+  const maxAge = oneDayInSeconds + randomInteger(3600);
 
   return generateSvgBanner(users, {
     limit,
@@ -57,16 +68,15 @@ export default async function banner(req, res) {
     height,
     avatarHeight,
     margin,
-    linkToProfile,
     collectiveSlug,
     includeAnonymous,
   })
-    .then(content => {
+    .then((content) => {
       res.setHeader('Content-Type', 'image/svg+xml;charset=utf-8');
-      res.setHeader('Cache-Control', 'public, max-age=21600');
+      res.setHeader('Cache-Control', `public, max-age=${maxAge}`);
       res.send(content);
     })
-    .catch(e => {
+    .catch((e) => {
       logger.error('>>> collectives.banner error', e);
     });
 }

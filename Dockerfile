@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:12
 
 RUN apt-get update -y && apt-get install -y graphicsmagick
 
@@ -27,6 +27,6 @@ ENV API_KEY $API_KEY
 
 RUN npm run build
 
-EXPOSE ${PORT}
+EXPOSE $PORT
 
 CMD [ "npm", "run", "start" ]
