@@ -6,7 +6,9 @@
     "url": "https://github.com/opencollective/opencollective-images.git"
   },
   "jest": {
-    "testPathIgnorePatterns": ["opencollective-api/"]
+    "testPathIgnorePatterns": [
+      "opencollective-api/"
+    ]
   },
   "private": true,
   "engines": {
@@ -14,7 +16,7 @@
     "npm": "^6.9.0"
   },
   "dependencies": {
-    "@hyperwatch/hyperwatch": "3.8.1",
+    "@hyperwatch/hyperwatch": "^3.8.2",
     "apollo-boost": "0.4.9",
     "bluebird": "3.7.2",
     "cached-request": "3.0.0",
@@ -23,7 +25,7 @@
     "express": "4.17.1",
     "express-basic-auth": "1.2.0",
     "express-winston": "4.0.5",
-    "express-ws": "4.0.0",
+    "express-ws": "^5.0.2",
     "graphql": "15.3.0",
     "graphql-tag": "2.11.0",
     "image-size": "0.8.3",
@@ -32,8 +34,13 @@
     "lru-cache": "6.0.0",
     "mime-types": "2.1.27",
     "node-fetch": "2.6.1",
+  <<<<<<< dependabot/npm_and_yarn/p-limit-3.1.0
     "p-limit": "3.1.0",
     "redis": "3.0.2",
+  =======
+    "p-limit": "3.0.2",
+    "redis": "3.1.1",
+  >>>>>>> main
     "request": "2.88.2",
     "sharp": "0.25.4",
     "winston": "3.3.3"
