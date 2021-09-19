@@ -7,10 +7,15 @@ const asyncRedis = Promise.promisifyAll(redis);
 const debugCache = debug('cache');
 
 const makeRedisProvider = ({ serverUrl }) => {
-  const client = asyncRedis.createClient(serverUrl);
+  serverUrl = serverUrl.replace('://h:', '://:'); // Remove fake username that used to be added by Heroku
+  const redisOptions = {};
+  if (serverUrl.includes('rediss://')) {
+    redisOptions.tls = { rejectUnauthorized: false };
+  }
+  const client = asyncRedis.createClient(serverUrl, redisOptions);
   return {
     clear: async () => client.flushallAsync(),
-    del: async key => client.delAsync(key),
+    del: async (key) => client.delAsync(key),
     get: async (key, { unserialize = JSON.parse } = {}) => {
       const value = await client.getAsync(key);
       if (value) {
@@ -23,7 +28,7 @@ const makeRedisProvider = ({ serverUrl }) => {
         return undefined;
       }
     },
-    has: async key => {
+    has: async (key) => {
       const value = await client.getAsync(key);
       return value !== null;
     },

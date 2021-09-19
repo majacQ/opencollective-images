@@ -8,12 +8,12 @@ const timeout = 30000;
 
 const cacheBurst = `cacheBurst=${Math.round(Math.random() * 100000)}`;
 
-const fetchResponse = path => {
+const fetchResponse = (path) => {
   const pathWithCacheBurst = [path, cacheBurst].join(path.indexOf('?') === -1 ? '?' : '&');
   return fetch(`${imagesUrl}${pathWithCacheBurst}`);
 };
 
-const fetchText = path => fetchResponse(path).then(response => response.text());
+const fetchText = (path) => fetchResponse(path).then((response) => response.text());
 
 describe('badge.routes.test.js', () => {
   describe('backerType (backers|sponsors)', () => {
@@ -104,7 +104,9 @@ describe('badge.routes.test.js', () => {
       'loads the first member avatar.svg',
       async () => {
         const resText = await fetchText('/apex/tiers/sponsors/0/avatar.svg?isActive=false');
-        expect(resText).toMatch(/<image width="192" height="64"/);
+        expect(resText).toMatch(
+          /<svg xmlns="http:\/\/www.w3.org\/2000\/svg" xmlns:xlink="http:\/\/www.w3.org\/1999\/xlink"/,
+        );
       },
       timeout,
     );
